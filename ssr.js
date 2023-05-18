@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         srr端脚本
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.0.2
 // @author       郑士琳
 // @description  ssr端的相关代码
 // @match        https://ssr.saa.com.cn/*
@@ -10,28 +10,37 @@
 // ==/UserScript==
 
 // Listen for messages from the parent page
-window.addEventListener('message', function(event) {
+
+
+
+window.addEventListener('message', function (event) {
     console.log(event)
-    //if (event.origin !== 'http://www.sitea.com') return;
+    if (event.origin !== 'http://cc.saa.com.cn' && event.origin !== 'https://cc.saa.com.cn') return;
 
-
-    if (event.data.msg === 'open'){
+    if (event.data.msg === 'open') {
         window.open('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(event.data.id));
     }
+    if (event.data.msg === 'replace') {
+        console.log('替换')
+        this.location.replace('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(event.data.id));
+        this.location.reload()
+    }
+
+
     if (event.data.msg === 'getToken') {
         // Get the variable from localStorage
         console.log('getTokening')
         let vuex = JSON.parse(localStorage.getItem('vuex'));
-        if (vuex == undefined){
+        if (vuex == undefined) {
             console.log('srrlogin')
             alert("请先登录SAA救援平台。")
             window.open('https://ssr.saa.com.cn/');
-            event.source.postMessage({error:true}, event.origin);
+            event.source.postMessage({ error: true }, event.origin);
         }
-        else  {
-            event.source.postMessage({token:vuex.token,data:event.data.data}, event.origin);
+        else {
+            event.source.postMessage({ token: vuex.token, data: event.data.data }, event.origin);
         }
-        console.log(vuex,vuex.token)
+        console.log(vuex, vuex.token)
         // Send a message to the parent page
     }
 

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         cc端脚本
 // @namespace    http://cc.saa.com.cn/
-// @version      1.0.1
+// @version      1.0.2
 // @description  cc端的相关代码
 // @author       郑士琳
 // @match        cc.saa.com.cn/*
@@ -10,7 +10,20 @@
 // @downloadURL  https://raw.githubusercontent.com/SAAjinocc/imhelper/main/cc.js
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_registerMenuCommand
 // ==/UserScript==
+
+var needNew = GM_getValue('needNew', true);
+
+function toggleEnabled() {
+  needNew = !needNew;
+  GM_setValue('needNew', needNew);
+}
+
+GM_registerMenuCommand("切换刷新方式", toggleEnabled);
+
 
 (function () {
     var selectorF = ".chat_msg_goods_info";
@@ -141,7 +154,8 @@
                 res.data.list.forEach(function (i, index) {
                     setTimeout(() => {
                         if(ssrwin && !ssrwin.closed){
-                            ssrwin.postMessage({msg:'open',id:i.id},'https://ssr.saa.com.cn')
+                            ssrwin.postMessage({msg:needNew?'open':'replace',id:i.id},'https://ssr.saa.com.cn')
+                            //ssrwin.postMessage({msg:'replace',id:i.id},'https://ssr.saa.com.cn')
                         }
                         else {
                             ssrwin = window.open('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(i.id));
