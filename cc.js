@@ -2,12 +2,12 @@
 // @name         cc端脚本
 // @namespace    http://cc.saa.com.cn/
 // @version      1.0
-// @description  try to take over the world!
+// @description  cc端的相关代码
 // @author       郑士琳
 // @match        cc.saa.com.cn/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @updateURL    https://github.com/SAAjinocc/imhelper/blob/main/cc.js
-// @downloadURL  https://github.com/SAAjinocc/imhelper/blob/main/cc.js
+// @updateURL    https://raw.githubusercontent.com/SAAjinocc/imhelper/main/cc.js
+// @downloadURL  https://raw.githubusercontent.com/SAAjinocc/imhelper/main/cc.js
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
 // ==/UserScript==

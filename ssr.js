@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         srr端脚本
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  respond with variable to site A
+// @version      1.0
+// @author       郑士琳
+// @description  ssr端的相关代码
 // @match        https://ssr.saa.com.cn/*
-// @updateURL    https://github.com/SAAjinocc/imhelper/blob/main/ssr.js
-// @downloadURL  https://github.com/SAAjinocc/imhelper/blob/main/ssr.js
+// @updateURL    https://raw.githubusercontent.com/SAAjinocc/imhelper/main/ssr.js
+// @downloadURL  https://raw.githubusercontent.com/SAAjinocc/imhelper/main/ssr.js
 // ==/UserScript==
 
 // Listen for messages from the parent page
