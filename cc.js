@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         cc端脚本
 // @namespace    http://cc.saa.com.cn/
-// @version      1.0
+// @version      1.0.1
 // @description  cc端的相关代码
 // @author       郑士琳
 // @match        cc.saa.com.cn/*
@@ -21,7 +21,7 @@
     iframe.style.display = 'none';
     iframe.src = 'https://ssr.saa.com.cn/#/inner-search';
     let lock = false
-    let lastOrder = ""
+    let ssrwin
     var observer = new MutationObserver(function (mutationsList) {
         // 遍历每个DOM变化
         for (var mutation of mutationsList) {
@@ -72,9 +72,8 @@
     function clickHandler(event) {
         if(lock)return;
         var order = event.target.textContent.match(/[:：]\s*(\S+)/)[1]
-        if(order == lastOrder)return
         lock = true
-        lastOrder = order
+        console.log(ssrwin)
         var orderNumber = event.target.textContent.split(" ")[0].startsWith('案件号')? "":order
         var caseNo = event.target.textContent.split(" ")[0].startsWith('案件号')?order:""
         var now = new Date().getTime();
@@ -141,7 +140,12 @@
                 }
                 res.data.list.forEach(function (i, index) {
                     setTimeout(() => {
-                        window.open('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(i.id));
+                        if(ssrwin && !ssrwin.closed){
+                            ssrwin.postMessage({msg:'open',id:i.id},'https://ssr.saa.com.cn')
+                        }
+                        else {
+                            ssrwin = window.open('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(i.id));
+                        }
                     }, index * 500)
                 });
                 lock = false

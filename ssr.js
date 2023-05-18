@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         srr端脚本
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.0.1
 // @author       郑士琳
 // @description  ssr端的相关代码
 // @match        https://ssr.saa.com.cn/*
@@ -15,7 +15,9 @@ window.addEventListener('message', function(event) {
     //if (event.origin !== 'http://www.sitea.com') return;
 
 
-
+    if (event.data.msg === 'open'){
+        window.open('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(event.data.id));
+    }
     if (event.data.msg === 'getToken') {
         // Get the variable from localStorage
         console.log('getTokening')
