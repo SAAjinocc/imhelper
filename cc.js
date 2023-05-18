@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         cc端脚本
 // @namespace    http://cc.saa.com.cn/
-// @version      1.0.2
+// @version      1.0.3
 // @description  cc端的相关代码
 // @author       郑士琳
 // @match        cc.saa.com.cn/*
@@ -18,8 +18,8 @@
 var needNew = GM_getValue('needNew', true);
 
 function toggleEnabled() {
-  needNew = !needNew;
-  GM_setValue('needNew', needNew);
+    needNew = !needNew;
+    GM_setValue('needNew', needNew);
 }
 
 GM_registerMenuCommand("切换刷新方式", toggleEnabled);
@@ -62,49 +62,49 @@ GM_registerMenuCommand("切换刷新方式", toggleEnabled);
     // 启动观察器并指定要观察的根节点
     observer.observe(document.body, observerConfig);
 
-    function getToken(data){
+    function getToken(data) {
         document.body.appendChild(iframe);
-        iframe.onload = ()=>{
-            iframe.contentWindow.postMessage({data,msg:'getToken'}, iframe.src);
+        iframe.onload = () => {
+            iframe.contentWindow.postMessage({ data, msg: 'getToken' }, iframe.src);
         }
     }
 
-    window.addEventListener('message', function(event) { //等待srr网站返回的token
+    window.addEventListener('message', function (event) { //等待srr网站返回的token
         if (event.origin !== 'https://ssr.saa.com.cn') return;
         lock = false
         document.body.removeChild(iframe);
         console.log(event)
-        if(event.data.error)return
+        if (event.data.error) return
         token = event.data.token
-        tryOpen(event.data.data,true)
+        tryOpen(event.data.data, true)
         console.log(token)
-    // Remove the iframe
+        // Remove the iframe
 
     }, false);
 
     function clickHandler(event) {
-        if(lock)return;
+        if (lock) return;
         var order = event.target.textContent.match(/[:：]\s*(\S+)/)[1]
         lock = true
         console.log(ssrwin)
-        var orderNumber = event.target.textContent.split(" ")[0].startsWith('案件号')? "":order
-        var caseNo = event.target.textContent.split(" ")[0].startsWith('案件号')?order:""
+        var orderNumber = event.target.textContent.split(" ")[0].startsWith('案件号') ? "" : order
+        var caseNo = event.target.textContent.split(" ")[0].startsWith('案件号') ? order : ""
         var now = new Date().getTime();
         var data = JSON.stringify({
-            bookStartTime: formatDateTime(now-7*24*60*60*1000),
-            bookStopTime: formatDateTime(now+3*24*60*60*1000),
+            bookStartTime: formatDateTime(now - 7 * 24 * 60 * 60 * 1000),
+            bookStopTime: formatDateTime(now + 3 * 24 * 60 * 60 * 1000),
             orderNumber,
             caseNo,
             pageSize: 20,
             pageIndex: 1
         })
-        tryOpen(data,false)
-        console.log('cn:'+caseNo+'\n'+'or'+orderNumber)
+        tryOpen(data, false)
+        console.log('cn:' + caseNo + '\n' + 'or' + orderNumber)
     }
 
     // 格式化日期和时间
     function formatDateTime(dateOrgin) {
-        var date  = new Date(dateOrgin)
+        var date = new Date(dateOrgin)
         var year = date.getFullYear();
         var month = ("0" + (date.getMonth() + 1)).slice(-2);
         var day = ("0" + date.getDate()).slice(-2);
@@ -114,10 +114,10 @@ GM_registerMenuCommand("切换刷新方式", toggleEnabled);
     }
 
 
-    function tryOpen(data,isFinal){
+    function tryOpen(data, isFinal) {
         GM_xmlhttpRequest({
             method: "POST",
-            url: "https://ssr.saa.com.cn/redirect-request/pg-search/order/query?access_token="+token+"&rid=d8pcw",
+            url: "https://ssr.saa.com.cn/redirect-request/pg-search/order/query?access_token=" + token + "&rid=d8pcw",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -125,40 +125,42 @@ GM_registerMenuCommand("切换刷新方式", toggleEnabled);
             onload: function (response) {
                 var res = JSON.parse(response.responseText);
                 console.log(res)
-                if(res.code == 401){
+                if (res.code == 401) {
                     console.log('登录信息过期')
-                    if(isFinal){
+                    if (isFinal) {
                         alert("请先登录SAA救援平台后重试")
                         console.log('cclogin')
                         window.open('https://ssr.saa.com.cn/');
-                    }else{
+                    } else {
                         getToken(data)
                     }
                     return
                 }
-                if(res.data.list.length == undefined || res.data.list.length == 0){
+                if (res.data.list.length == undefined || res.data.list.length == 0) {
                     console.log(data)
                     data = JSON.parse(data)
-                    GM_setClipboard(data.caseNo?data.caseNo:data.orderNumber);
+                    GM_setClipboard(data.caseNo ? data.caseNo : data.orderNumber);
                     lock = false
                     alert("查询此案件失败，已复制案件号，请手动查询。")
                     return
                 }
-                if(res.data.list.length>5){
+                if (res.data.list.length > 3) {
                     data = JSON.parse(data)
-                    GM_setClipboard(data.caseNo?data.caseNo:data.orderNumber);
+                    GM_setClipboard(data.caseNo ? data.caseNo : data.orderNumber);
                     lock = false
-                    alert("查询结果大于5条，已复制案件号，请手动打开。")
+                    alert("查询结果大于3条，已复制案件号，请手动打开。")
                     return
                 }
                 res.data.list.forEach(function (i, index) {
                     setTimeout(() => {
-                        if(ssrwin && !ssrwin.closed){
-                            ssrwin.postMessage({msg:needNew?'open':'replace',id:i.id},'https://ssr.saa.com.cn')
+                        if (ssrwin && !ssrwin.closed) {
+                            ssrwin.postMessage({ msg: (needNew || index < res.data.list.length-1) ? 'open' : 'replace', id: i.id }, 'https://ssr.saa.com.cn')
                             //ssrwin.postMessage({msg:'replace',id:i.id},'https://ssr.saa.com.cn')
                         }
                         else {
-                            ssrwin = window.open('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(i.id));
+                            if(index == res.data.list.length-1)
+                                ssrwin = window.open('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(i.id));
+                            else window.open('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(i.id));
                         }
                     }, index * 500)
                 });
