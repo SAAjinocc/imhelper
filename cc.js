@@ -6,8 +6,8 @@
 // @author       郑士琳
 // @match        cc.saa.com.cn/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-// @updateURL    脚本更新的 URL
-// @downloadURL  脚本下载的 URL
+// @updateURL    https://github.com/SAAjinocc/imhelper/blob/main/cc.js
+// @downloadURL  https://github.com/SAAjinocc/imhelper/blob/main/cc.js
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
 // ==/UserScript==

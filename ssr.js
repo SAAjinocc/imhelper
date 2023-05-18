@@ -4,7 +4,8 @@
 // @version      0.1
 // @description  respond with variable to site A
 // @match        https://ssr.saa.com.cn/*
-// @grant        GM_xmlhttpRequest
+// @updateURL    https://github.com/SAAjinocc/imhelper/blob/main/ssr.js
+// @downloadURL  https://github.com/SAAjinocc/imhelper/blob/main/ssr.js
 // ==/UserScript==
 
 // Listen for messages from the parent page
