@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         cc端脚本
 // @namespace    http://cc.saa.com.cn/
-// @version      1.0.3
+// @version      1.0.4
 // @description  cc端的相关代码
 // @author       郑士琳
 // @match        cc.saa.com.cn/*
@@ -22,8 +22,18 @@ function toggleEnabled() {
     GM_setValue('needNew', needNew);
 }
 
-GM_registerMenuCommand("切换刷新方式", toggleEnabled);
 
+var sd = GM_getValue('sd', true);
+
+function togglesd() {
+    sd = !sd;
+    GM_setValue('sd', sd);
+    alert('请刷新页面以生效配置')
+}
+
+
+GM_registerMenuCommand("切换刷新方式", toggleEnabled);
+GM_registerMenuCommand("切换单击双击", togglesd);
 
 (function () {
     var selectorF = ".chat_msg_goods_info";
@@ -49,8 +59,13 @@ GM_registerMenuCommand("切换刷新方式", toggleEnabled);
                 elements = mutation.target.querySelectorAll(selectorS);
                 elements.forEach(function (element) {
                     element.style.cursor = "pointer";
-                    element.removeEventListener("click", clickHandler);
-                    element.addEventListener('click', clickHandler)
+                    if(sd){
+                        element.removeEventListener("click", clickHandler);
+                        element.addEventListener('click', clickHandler)
+                    }else{
+                        element.removeEventListener("dblclick", clickHandler);
+                        element.addEventListener('dblclick', clickHandler)
+                    }
                 });
             }
         }
