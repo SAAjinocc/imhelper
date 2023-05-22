@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         srr端脚本
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
+// @version      1.0.3
 // @author       郑士琳
 // @description  ssr端的相关代码
 // @match        https://ssr.saa.com.cn/*
@@ -12,7 +12,6 @@
 // Listen for messages from the parent page
 
 
-
 window.addEventListener('message', function (event) {
     console.log(event)
     if (event.origin !== 'http://cc.saa.com.cn' && event.origin !== 'https://cc.saa.com.cn') return;
@@ -20,10 +19,27 @@ window.addEventListener('message', function (event) {
     if (event.data.msg === 'open') {
         window.open('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(event.data.id));
     }
+    // if (event.data.msg === 'replace') {
+    //     console.log('替换')
+    //     this.location.replace('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(event.data.id));
+    //     this.location.reload()
+    //     console.log('替换结束')
+    // }
     if (event.data.msg === 'replace') {
-        console.log('替换')
-        this.location.replace('https://ssr.saa.com.cn/#/orderDetail?id=' + encodeURIComponent(event.data.id));
-        this.location.reload()
+        console.log('替换2')
+        let router = appVue.$root._router
+        let newUrl = '/orderDetail?id=' + encodeURIComponent(event.data.id)
+        console.log(appVue.$root._router,newUrl)
+        router.push({
+            path:'/inner-search',
+        }).then(() => {
+            //router.go();
+            router.push({
+                path:'/orderDetail',
+                query:{id:encodeURIComponent(event.data.id)}
+            })
+        })
+        console.log('替换2结束')
     }
 
 
